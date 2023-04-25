@@ -1,0 +1,11 @@
+# Use cloudformation to build a kubernetes cluster
+
+# build cluster
+
+# initialize cluster
+
+# deploy pipeline
+
+# test and run lint
+
+# initialize k8 cluster using ansible or cloudformation
