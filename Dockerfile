@@ -1,12 +1,13 @@
 FROM circleci/node:13.8.0
 
-# create working directory
 WORKDIR /app
 
-COPY . /app/
+COPY package*.json ./
 
-RUN 
+COPY . .
 
-EXPOSE 80
+RUN npm install
 
-CMD ["index.html"]
+EXPOSE 3000
+
+CMD ["node", "index.js"]
