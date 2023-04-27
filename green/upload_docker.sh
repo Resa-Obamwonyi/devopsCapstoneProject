@@ -5,7 +5,7 @@ dockerpath=resaobas/capstone_greenapp
 
 # Step 2
 echo "Docker ID and Image: $dockerpath"
-docker login --username resaobas 
+docker login --username resaobas --password $1
 
 docker tag capstone_greenapp $dockerpath
 
