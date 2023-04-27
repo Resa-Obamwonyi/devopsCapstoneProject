@@ -13,59 +13,44 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install dependencies
-          command: |
-            npm install
-
-      - run:
-          name: run linting for blue app
+          name: install dependenices and run linting for blue app
           command: |
             cd blue
             make install
-            # # Install hadolint
-            # sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
-            # sudo chmod u+x /bin/hadolint            
-            # #./hadolint Dockerfile
-            # pylint --disable=R,C,W1203,W1202 myCapstone_helloworld.py
             make lint
 
       - run:
-          name: run linting for green app
+          name: install dependenices and run linting for green app
           command: |
             cd green
             make install
             make lint
   
-  build-docker-image:
-    docker:
-      - image: circleci/node:13.8.0
-    working_directory: ~/app
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build blue_app container
-          command: |
-            cd blue
-            ./run_docker.sh
-            ./upload_docker.sh
-      - run:
-          name: Build green_app container
-          command: |
-            cd green
-            # DELETE
-            # docker build --tag=alias64/greenimagedeploy:green .
-            # docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD" 
-            # # Pusing docker images to git hub
-            # docker push alias64/greenimagedeploy:green
-            ./run_docker.sh
-            ./upload_docker.sh
+  # build-docker-image:
+  #   docker:
+  #     - image: circleci/node:13.8.0
+  #   working_directory: ~/app
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker:
+  #         docker_layer_caching: true
+  #     - run:
+  #         name: Build blue_app container
+  #         command: |
+  #           cd blue
+  #           docker build -t capstone_blueapp .
+  #           ./upload_docker.sh
+  #     - run:
+  #         name: Build green_app container
+  #         command: |
+  #           cd green
+  #           docker build -t capstone_greenapp .
+  #           ./upload_docker.sh
 
 workflows:
   default:
     jobs:
       - setup-run-lint
-      - build-docker-image:
-          requires:
-            - setup-run-lint
+      # - build-docker-image:
+      #     requires:
+      #       - setup-run-lint

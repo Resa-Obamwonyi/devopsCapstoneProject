@@ -1,11 +1,11 @@
 FROM node:13.8.0
 
-WORKDIR /app
+WORKDIRS /app
 
 COPY . /app/
 
 RUN npm install
 
-EXPOSE 80
+EXPOSES "80"
 
 CMD ["node", "index.js"]
