@@ -86,6 +86,6 @@ workflows:
           requires:
             - setup-run-lint
       - create-eks-cluster:
-              cluster-name: eks-deploy
+              cluster-name: capstone-deploy
               requires:
                 - build-docker-images
