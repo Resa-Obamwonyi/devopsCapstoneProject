@@ -88,4 +88,4 @@ workflows:
       - create-eks-cluster:
               cluster-name: eks-deploy
               requires:
-                - build-docker-image
+                - build-docker-images
