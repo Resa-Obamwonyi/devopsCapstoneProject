@@ -26,31 +26,31 @@ jobs:
             make install
             make lint
   
-  # build-docker-image:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   working_directory: ~/app
-  #   steps:
-  #     - checkout
-  #     - setup_remote_docker:
-  #         docker_layer_caching: true
-  #     - run:
-  #         name: Build blue_app container
-  #         command: |
-  #           cd blue
-  #           docker build -t capstone_blueapp .
-  #           ./upload_docker.sh
-  #     - run:
-  #         name: Build green_app container
-  #         command: |
-  #           cd green
-  #           docker build -t capstone_greenapp .
-  #           ./upload_docker.sh
+  build-docker-images:
+    docker:
+      - image: circleci/node:13.8.0
+    working_directory: ~/app
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build blue_app container
+          command: |
+            cd blue
+            docker build -t capstone_blueapp .
+            ./upload_docker.sh
+      - run:
+          name: Build green_app container
+          command: |
+            cd green
+            docker build -t capstone_greenapp .
+            ./upload_docker.sh
 
 workflows:
   default:
     jobs:
       - setup-run-lint
-      # - build-docker-image:
-      #     requires:
-      #       - setup-run-lint
+      - build-docker-images:
+          requires:
+            - setup-run-lint
