@@ -15,7 +15,6 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            cd app/
             npm install
 
       - run:
