@@ -92,6 +92,7 @@ jobs:
             name: Deploy blue app in cluster
             command: |
               cd blue
+              kubectl cluster-info
               chmod +x run_kubernetes.sh
               sudo ./run_kubernetes.sh
         - run:
