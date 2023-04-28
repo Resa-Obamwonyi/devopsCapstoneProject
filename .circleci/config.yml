@@ -135,16 +135,16 @@ workflows:
             - setup-run-lint
 
       - create-cluster:
-          cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7
+          cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7}
           requires:
             - build-docker-images
 
       - test-cluster:
-          cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7
+          cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7}
           requires:
             - create-cluster
 
       - delete-cluster:
-          cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7
+          cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7}
           requires:
             - test-cluster
