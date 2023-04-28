@@ -134,16 +134,16 @@ workflows:
             - setup-run-lint
 
       - create-cluster:
-              cluster-name: capstone-deploy
-              requires:
-                - build-docker-images
+          cluster-name: capstone-deploy
+          requires:
+            - build-docker-images
 
-     - test-cluster:
-         cluster-name: capstone-deploy
-         requires:
-           - create-cluster
+      - test-cluster:
+          cluster-name: capstone-deploy
+          requires:
+            - create-cluster
 
-     - delete-cluster:
-         cluster-name: capstone-deploy
-         requires:
-           - test-cluster
+      - delete-cluster:
+          cluster-name: capstone-deploy
+          requires:
+            - test-cluster
