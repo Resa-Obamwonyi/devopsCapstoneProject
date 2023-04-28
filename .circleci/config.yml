@@ -85,6 +85,10 @@ jobs:
             kubectl-version: v1.25.0
         - aws-eks/update-kubeconfig-with-authenticator:
             cluster-name: << parameters.cluster-name >>
+        - kubernetes/create-or-update-resource:
+            get-rollout-status: true
+            resource-file-path: ./blue-green-service.json
+            resource-name: blue-green-service
         - run:
             name: Deploy blue app in cluster
             command: |
@@ -106,26 +110,26 @@ jobs:
             command: |
               sleep 60 && kubectl get all && sleep 60
 
-  delete-cluster:
-      docker:
-        - image: circleci/node:13.8.0
-      parameters:
-        cluster-name:
-          description: |
-            Name of the EKS cluster
-          type: string
-      steps:
-        - run:
-            name: Install the eksctl tool
-            command: |
-              mkdir -p eksctl_download
-              curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
-                | tar xz -C eksctl_download
-              chmod +x eksctl_download/eksctl
-              sudo mv eksctl_download/eksctl /usr/local/bin/
-              rmdir eksctl_download
-        - aws-eks/delete-cluster:
-            cluster-name: << parameters.cluster-name >>
+  # delete-cluster:
+  #     docker:
+  #       - image: circleci/node:13.8.0
+  #     parameters:
+  #       cluster-name:
+  #         description: |
+  #           Name of the EKS cluster
+  #         type: string
+  #     steps:
+  #       - run:
+  #           name: Install the eksctl tool
+  #           command: |
+  #             mkdir -p eksctl_download
+  #             curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
+  #               | tar xz -C eksctl_download
+  #             chmod +x eksctl_download/eksctl
+  #             sudo mv eksctl_download/eksctl /usr/local/bin/
+  #             rmdir eksctl_download
+  #       - aws-eks/delete-cluster:
+  #           cluster-name: << parameters.cluster-name >>
 
 workflows:
   default:
@@ -146,7 +150,7 @@ workflows:
           requires:
             - create-cluster
 
-      - delete-cluster:
-          cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7}
-          requires:
-            - test-cluster
+      # - delete-cluster:
+      #     cluster-name: capstone-deploy-${CIRCLE_WORKFLOW_ID:0:7}
+      #     requires:
+      #       - test-cluster
