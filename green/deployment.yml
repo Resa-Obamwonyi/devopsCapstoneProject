@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: green-app-deployment
+  labels:
+    app: green-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: green-app
+  template:
+    metadata:
+      labels:
+        app: green-app
+    spec:
+      containers:
+        - name: green-app
+          image: resaobas/capstone_greenapp
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: green-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: green-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

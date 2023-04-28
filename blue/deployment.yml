@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-app-deployment
+  labels:
+    app: blue-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: blue-app
+  template:
+    metadata:
+      labels:
+        app: blue-app
+    spec:
+      containers:
+        - name: blue-app
+          image: resaobas/capstone_blueapp
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: blue-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: blue-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
