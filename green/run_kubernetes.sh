@@ -1,2 +1,2 @@
 # Run the Docker Hub container with kubernetes
-kubectl apply -f ./deployment.yml
+kubectl apply -f ./green-service.json
