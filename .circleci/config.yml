@@ -89,7 +89,8 @@ jobs:
             name: Deploy blue app in cluster
             command: |
               cd blue
-              ./run_kubernetes.sh
+              chmod +x run_kubernetes.sh
+              sudo ./run_kubernetes.sh
         - run:
             name: Confirm blue app is in cluster
             command: |
@@ -98,7 +99,8 @@ jobs:
             name: Deploy green app in cluster
             command: |
               cd green
-              ./run_kubernetes.sh
+              chmod +x run_kubernetes.sh
+              sudo ./run_kubernetes.sh
         - run:
             name: Confirm green app is in cluster
             command: |
