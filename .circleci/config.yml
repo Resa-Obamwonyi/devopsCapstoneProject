@@ -48,7 +48,7 @@ jobs:
             docker build -t capstone_greenapp .
             ./upload_docker.sh "$DOCKERHUB_PASSWORD"
  
-  create-eks-cluster:
+  create-cluster:
       docker:
         - image: circleci/node:13.8.0
       parameters:
@@ -61,31 +61,89 @@ jobs:
         - run:
             name: Install the eksctl tool
             command: |
-              if which eksctl > /dev/null; then
-                echo "eksctl is already installed"
-                exit 0
-              fi
               mkdir -p eksctl_download
               curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
                 | tar xz -C eksctl_download
               chmod +x eksctl_download/eksctl
-              SUDO=""
-              if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
-                SUDO="sudo"
-              fi
-              $SUDO mv eksctl_download/eksctl /usr/local/bin/
+              sudo mv eksctl_download/eksctl /usr/local/bin/
               rmdir eksctl_download
         - aws-eks/create-cluster:
+            cluster-name: << parameters.cluster-name >>
+
+  test-cluster:
+      docker:
+        - image: circleci/node:13.8.0
+      parameters:
+        cluster-name:
+          description: |
+            Name of the EKS cluster
+          type: string
+      steps:
+        - checkout
+        - kubernetes/install:
+            kubectl-version: v1.25.0
+        - aws-eks/update-kubeconfig-with-authenticator:
+            cluster-name: << parameters.cluster-name >>
+        - run:
+            name: Deploy blue app in cluster
+            command: |
+              cd blue
+              ./run_kubernetes.sh
+        - run:
+            name: Confirm blue app is in cluster
+            command: |
+              sleep 60 && kubectl get all && sleep 60
+        - run:
+            name: Deploy green app in cluster
+            command: |
+              cd green
+              ./run_kubernetes.sh
+        - run:
+            name: Confirm green app is in cluster
+            command: |
+              sleep 60 && kubectl get all && sleep 60
+
+  delete-cluster:
+      docker:
+        - image: circleci/node:13.8.0
+      parameters:
+        cluster-name:
+          description: |
+            Name of the EKS cluster
+          type: string
+      steps:
+        - run:
+            name: Install the eksctl tool
+            command: |
+              mkdir -p eksctl_download
+              curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
+                | tar xz -C eksctl_download
+              chmod +x eksctl_download/eksctl
+              sudo mv eksctl_download/eksctl /usr/local/bin/
+              rmdir eksctl_download
+        - aws-eks/delete-cluster:
             cluster-name: << parameters.cluster-name >>
 
 workflows:
   default:
     jobs:
       - setup-run-lint
+
       - build-docker-images:
           requires:
             - setup-run-lint
-      - create-eks-cluster:
+
+      - create-cluster:
               cluster-name: capstone-deploy
               requires:
                 - build-docker-images
+
+     - test-cluster:
+         cluster-name: capstone-deploy
+         requires:
+           - create-cluster
+
+     - delete-cluster:
+         cluster-name: capstone-deploy
+         requires:
+           - test-cluster
