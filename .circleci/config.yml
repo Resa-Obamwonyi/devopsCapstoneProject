@@ -70,7 +70,7 @@ jobs:
               
         - aws-eks/create-cluster:
             cluster-name: << parameters.cluster-name >>
-            zones: us-east-1a
+            zones: us-east-1a,us-east-1b
 
   test-cluster:
       docker:
