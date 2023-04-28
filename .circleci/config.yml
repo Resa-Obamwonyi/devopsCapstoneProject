@@ -94,7 +94,7 @@ jobs:
               cd blue
               kubectl cluster-info
               chmod +x run_kubernetes.sh
-              sudo ./run_kubernetes.sh
+              ./run_kubernetes.sh
         - run:
             name: Confirm blue app is in cluster
             command: |
@@ -104,7 +104,7 @@ jobs:
             command: |
               cd green
               chmod +x run_kubernetes.sh
-              sudo ./run_kubernetes.sh
+              ./run_kubernetes.sh
         - run:
             name: Confirm green app is in cluster
             command: |
