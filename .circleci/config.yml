@@ -70,7 +70,7 @@ jobs:
               
         - aws-eks/create-cluster:
             cluster-name: << parameters.cluster-name >>
-              aws-region: us-east-1a
+            aws-region: us-east-1a
             
 
   test-cluster:
